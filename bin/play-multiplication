@@ -6,9 +6,10 @@
 import random
 import argparse
 import time
+import collections
 
 parser = argparse.ArgumentParser(description='Learn time tables.')
-parser.add_argument('-n', type=int, default=3, help='Number of times you want to play.')
+parser.add_argument('-n', type=int, default=10, help='Number of times you want to play.')
 parser.add_argument('-t', type=int, default=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], nargs='*', help='List of tables you want to practice.')
 parser.add_argument('-m', type=int, default=12, help='Maximum number in the table, usually 10 or 12.')
 parser.add_argument('-p', type=str, default='Diego', help='Name of the player')
@@ -27,8 +28,8 @@ print('')
 print("Let's start playing:")
 print('')
 
-b = 0  # counter for good responses
-f = []    # failures
+b = 0   # counter for good responses
+f = collections.Counter()  # failures
 t0 = time.time()
 
 for i in range(n):
@@ -43,30 +44,38 @@ for i in range(n):
     y = str(y)
     z = str(z)
 
-    s = input('    ' + x + ' X ' + y + ' = ')  # read value
+    s = input('  ' + x + ' X ' + y + ' = ')  # read value
     print('')
+    
     if s == z:
         print('    Well Done!!!')
         b += 1
     else:
-        print('    No ' + x + ' times ' + y + ' is ' + z)
-        f.append(x)
-        f.append(y)
-        
-    if i != n:
-        print('')
-        print('      ... but lets go for the next one:')
+        print('    No ' + x + ' times ' + y + ' equals ' + z)
+        f[x] += 1
+        f[y] += 1
 
     print('')
-
+    
+    if i != n:
+        print('      ... but lets go for the next one:')
+        print('')
 
 t1 = time.time()
-ts = int(t1 - t0)
+tm, ts = divmod(int(t1 - t0), 60)
 
-print('')
-print('The game is over.')
-print('You have done it quite well.')
+print('The game is over now.')
+print('You have done it quite well:')
 print('')
 print('    You did well in', b, 'out of', n, 'answers.')
-print('    It took you', ts, 'secconds.')
+
+if tm == 0:
+    print('    It took you', ts, 'seconds.')
+else:
+    print('    It took you', tm, 'minute and', ts, 'seconds.')
+
+if len(f) > 0:
+    g = f.most_common(1)[0][0]
+    print('    You should revise the', g, 'times table.')
+
 print('')
