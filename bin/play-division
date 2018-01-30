@@ -8,18 +8,18 @@ import argparse
 import time
 import collections
 
-parser = argparse.ArgumentParser(description='Learn time tables.')
+parser = argparse.ArgumentParser(description='Learn divisions.')
 parser.add_argument('-n', type=int, default=10, help='Number of times you want to play.')
-parser.add_argument('-t', type=int, default=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], nargs='*', help='List of tables you want to practice.')
-parser.add_argument('-m', type=int, default=12, help='Maximum number in the table, usually 10 or 12.')
+parser.add_argument('-t', type=int, default=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], nargs='*', help='List of divisors you want to practice.')
 parser.add_argument('-p', type=str, default='Diego', help='Name of the player')
 
 args = parser.parse_args()
 
 n = args.n
 t = args.t
-m = args.m
 p = args.p
+
+tnz = [x for x in t if x != 0]
 
 print('')
 print('')
@@ -35,23 +35,23 @@ t0 = time.time()
 for i in range(n):
 
     i += 1
-    
+
     x = random.choice(t)
-    y = random.randint(0, m)
+    y = random.choice(tnz)
     z = x * y
 
     x = str(x)
     y = str(y)
     z = str(z)
 
-    s = input('  ' + x + ' X ' + y + ' = ')  # read value
+    s = input('  ' + z + ' / ' + y + ' = ')  # read value
     print('')
     
-    if s == z:
+    if s == x:
         print('    Well Done!!!')
         b += 1
     else:
-        print('    No ' + x + ' times ' + y + ' equals ' + z)
+        print('    No ' + z + ' divided by ' + y + ' equals ' + x)
         f[x] += 1
         f[y] += 1
 
