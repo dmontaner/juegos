@@ -21,5 +21,5 @@ setup(
     ],
     keywords='games learning',
     python_requires='>=3',
-    scripts=['bin/play-multiplication']
+    scripts=['bin/play-multiplication', 'bin/play-division']
 )
