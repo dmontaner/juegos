@@ -9,7 +9,7 @@ import time
 import collections
 
 parser = argparse.ArgumentParser(description='Learn time tables.')
-parser.add_argument('-n', type=int, default=10, help='Number of times you want to play.')
+parser.add_argument('-n', type=int, default=30, help='Number of times you want to play.')
 parser.add_argument('-t', type=int, default=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], nargs='*', help='List of tables you want to practice.')
 parser.add_argument('-m', type=int, default=12, help='Maximum number in the table, usually 10 or 12.')
 parser.add_argument('-p', type=str, default='Diego', help='Name of the player')
