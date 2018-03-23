@@ -1,0 +1,85 @@
+#!/usr/local/bin/python3
+# play-spell.py
+# 2018-03-23 david.montaner@gmail.com
+# Spelling teacher
+
+import os
+import random
+import argparse
+import time
+import collections
+import pandas as pd
+
+parser = argparse.ArgumentParser(description='Spelling.')
+parser.add_argument('-n', type=int, default=10, help='Number of times you want to play.')
+parser.add_argument('-p', type=str, default='Diego', help='Name of the player')
+
+parser.add_argument('-w', type=str, nargs='*', help='Weeks you want to practice')
+parser.add_argument('-e', action='store_true', help='Exame mode')
+
+parser.add_argument('-id', type=str, default='1UORfbN1NDr_gHZrXAL5k6QxYLXcULHpU9FekzDbgrg4', help='Google Drive Spreadsheet ID')
+
+args = parser.parse_args()
+
+n = args.n
+p = args.p
+w = args.w
+e = args.e
+
+link = 'https://docs.google.com/spreadsheets/d/{}/export?format=tsv'.format(args.id)
+
+################################################################################
+
+# download data
+print('Downloading:')
+print(link)
+
+datos = pd.read_csv(link, sep='\t', dtype=str)
+datos['smn'] = datos['smn'].str.strip()
+datos['esp'] = datos['esp'].str.strip()
+datos['eng'] = datos['eng'].str.strip()
+
+# filter week
+if w is None:
+    pass
+else:
+    touse = datos['smn'].isin(w)
+    datos = datos[touse]
+
+# reorder
+datos = datos.sample(frac=1).reset_index(drop=True)
+N = datos.shape[0]
+
+print(datos)
+
+################################################################################
+
+print('')
+print('')
+print('Hello', p, '!!!')
+print('')
+print("Let's start playing:")
+print('')
+
+b = 0   # counter for good responses
+f = collections.Counter()  # failures
+t0 = time.time()
+
+for i in range(n):
+    r = i % N  # reminder: to make sure we restart the dataframe if necesary
+
+    esp = datos.loc[r, 'esp']
+    eng = datos.loc[r, 'eng']
+
+    s = input('Traduce esta palabra al ingles >>>  ' + esp + '  :  ')
+    s = s.strip()
+    x = 1 # counter
+    while s != eng:
+        print('\n    No. En ingles se escribe   ::: ', eng)
+        print('\nVamos a intentarlo otra vez.\n')
+        s = input('Traduce esta palabra al ingles >>>  ' + esp + '  :  ')
+        x = 0  # counter
+    print('\n    Well Done!!!\n')
+    b += x
+print(b)
+t0 = time.time()
