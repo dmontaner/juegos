@@ -21,5 +21,6 @@ setup(
     ],
     keywords='games learning',
     python_requires='>=3',
-    scripts=['bin/play-multiplication', 'bin/play-division']
+    scripts=['bin/play-multiplication', 'bin/play-division', 'bin/play-spell'],
+    install_requires=['pandas']
 )
