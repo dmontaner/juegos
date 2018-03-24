@@ -3,4 +3,9 @@ some games with python
 
 Install: 
 
-    pip3 install git+https://github.com/dmontaner/juegos
+    sudo -H pip3 install --upgrade git+https://github.com/dmontaner/juegos
+
+
+To Do
+
+- See if I can remove the `pandas` dependency.
