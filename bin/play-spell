@@ -34,7 +34,7 @@ link = 'https://docs.google.com/spreadsheets/d/{}/export?format=tsv'.format(args
 print('Downloading:')
 print(link)
 
-datos = pd.read_csv(link, sep='\t', dtype=str)
+datos = pd.read_csv(link, sep='\t', dtype=str, encoding='utf-8')
 datos['smn'] = datos['smn'].str.strip()
 datos['esp'] = datos['esp'].str.strip()
 datos['eng'] = datos['eng'].str.strip()
