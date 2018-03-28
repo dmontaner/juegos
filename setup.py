@@ -7,7 +7,7 @@ from setuptools import setup
 
 setup(
     name='juegos',
-    version='0.0.3',
+    version='0.0.4',
     description='Some educative games',
     long_description='Some educative games I use with my kids.',
     url='https://github.com/dmontaner/juegos',
