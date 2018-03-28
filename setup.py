@@ -25,5 +25,5 @@ setup(
              'bin/play-division',
              'bin/play-spell',
              'bin/play-translate'],
-    install_requires=['pandas']
+    install_requires=['pandas', 'pygame']
 )
