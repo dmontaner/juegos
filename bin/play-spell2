@@ -3,12 +3,14 @@
 # 2018-03-23 david.montaner@gmail.com
 # Spelling teacher
 
-# import os
+import os
 import random
 import argparse
 import time
 import collections
 import pandas as pd
+import urllib.request
+from pygame import mixer
 
 parser = argparse.ArgumentParser(description='Spelling.')
 parser.add_argument('-n', type=int, default=10, help='Number of times you want to play.')
@@ -17,6 +19,7 @@ parser.add_argument('-p', type=str, default='Diego', help='Name of the player')
 parser.add_argument('-w', type=str, nargs='*', help='Weeks you want to practice')
 parser.add_argument('-e', action='store_true', help='Exam mode')
 
+parser.add_argument('-v', action='store_true', help='Verbose')
 parser.add_argument('-id', type=str, default='1UORfbN1NDr_gHZrXAL5k6QxYLXcULHpU9FekzDbgrg4', help='Google Drive Spreadsheet ID')
 
 args = parser.parse_args()
@@ -25,14 +28,17 @@ n = args.n
 p = args.p
 w = args.w
 e = args.e
+v = args.v
 
 link = 'https://docs.google.com/spreadsheets/d/{}/export?format=tsv'.format(args.id)
 
 ################################################################################
 
 # download data
-print('Downloading:')
-print(link)
+if v:
+    print()
+    print('DOWNLOADING:')
+    print(link)
 
 datos = pd.read_csv(link, sep='\t', dtype=str, encoding='utf-8')
 datos['smn'] = datos['smn'].str.strip()
@@ -56,7 +62,23 @@ if e:
 
 ################################################################################
 
-print('')
+# MP3 DICTIONARY
+
+# prepare directory to save files
+mp3dic = os.path.join(os.getenv('HOME'), '.juegos', 'mp3dic')
+os.makedirs(mp3dic, exist_ok=True)
+os.chdir(mp3dic)
+
+def habla(mp3f):
+        mixer.init()
+        mixer.music.load(mp3f)
+        mixer.music.play()
+        while mixer.music.get_busy() == 1:
+            pass
+        mixer.quit()
+
+################################################################################
+
 print('')
 print('Hello', p, '!!!')
 print('')
@@ -71,34 +93,61 @@ for i in range(n):
     r = i % N  # reminder: to make sure we restart the data frame if necessary
 
     esp = datos.loc[r, 'esp']
-    eng = datos.loc[r, 'eng']
+    eng = datos.loc[r, 'eng'].lower()
 
-    s = input('Traduce esta palabra al ingles >>>  ' + esp + '  :  ')
-    s = s.strip()
-    x = 1 # counter
+    # download mp3
+    fichero = eng + '_gb_1.mp3'
+    if os.path.isfile(fichero):
+        pass
+    else:
+        url = 'http://audio.oxforddictionaries.com/en/mp3/' + fichero
+        if v:
+            print('DOWNLOADING')
+            print(url)
+        try:
+            urllib.request.urlretrieve(url, fichero)
+        except:
+            if v:
+                print(fichero, 'IS NOT IN THE MP3 DICTIONARY')
+            continue
 
-    # exam mode
-    if e:
-        if s != eng:
-            print('\n    No. En ingles se escribe   ::: ', eng)
-            print('')
-            x = 0  # counter
-            f[eng] += 1
-        else:
-            print('\n    Well Done!!!\n')
+    # say word
+    s = input('    Hit INTRO to listen the next word ...')
+    s = s.strip().lower().lower()
+    
+    while s == '':
+        habla(fichero)
+        print()
+        print('    Write the word you just head,')
+        s = input('    or INTRO to listen to it again:  ')
+        s = s.strip().lower()
 
-    # not exam mode
-    else: 
+    else:
+        x = 1 # counter
         while s != eng:
-            print('\n    No. En ingles se escribe   ::: ', eng)
-            print('\nVamos a intentarlo otra vez.\n')
-            s = input('Traduce esta palabra al ingles >>>  ' + esp + '  :  ')
+            print()
+            print('    NO. That word in English is spelled:       ', eng)
+            print()
+            s = input('    Type it again before going to the next one: ')
+            s = s.strip().lower()
+            habla(fichero)
             x = 0  # counter
             f[eng] += 1
         print('\n    Well Done!!!\n')
 
     b += x
     
+    # # exam mode
+    # if e:
+    #     if s != eng:
+    #         print('\n    No. En ingles se escribe   ::: ', eng)
+    #         print('')
+    #         x = 0  # counter
+    #         f[eng] += 1
+    #     else:
+    #         print('\n    Well Done!!!\n')
+
+
 t1 = time.time()
 tm, ts = divmod(int(t1 - t0), 60)
 
