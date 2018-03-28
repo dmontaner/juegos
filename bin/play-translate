@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
-# play-spell.py
+# play-translate.py
 # 2018-03-23 david.montaner@gmail.com
-# Spelling teacher
+# translate Spanish to English
 
 # import os
 import random

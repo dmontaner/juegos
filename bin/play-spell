@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 # play-spell.py
-# 2018-03-23 david.montaner@gmail.com
+# 2018-03-28 david.montaner@gmail.com
 # Spelling teacher
 
 import os
